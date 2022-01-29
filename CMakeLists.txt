@@ -14,7 +14,7 @@ find_package(SFML REQUIRED COMPONENTS graphics audio)
 file(GLOB_RECURSE DF_SRC src/*.cpp)
 
 # Create the library with the given sources (named the same as the project above)
-add_library(${PROJECT_NAME} ${DF_SRC})
+add_library(${PROJECT_NAME} ${DF_SRC} src/Manager.cpp src/Manager.h src/LogManager.cpp src/LogManager.h src/utility.cpp src/utility.h)
 # Link SFML graphics and audio modules privately (eg the demo cannot reference sfml without depending on it itself.
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-audio)
 
