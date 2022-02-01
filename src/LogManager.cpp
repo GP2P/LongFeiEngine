@@ -1,5 +1,6 @@
 #include "LogManager.h"
 #include "utility.h"
+#include "GameManager.h"
 
 df::LogManager::LogManager() {
 	do_flush = false;
@@ -11,8 +12,8 @@ df::LogManager::LogManager() {
 }
 
 df::LogManager &df::LogManager::getInstance() {
-	static LogManager logManager;
-	return logManager;
+	static LogManager instance;
+	return instance;
 }
 
 int df::LogManager::startUp() {
@@ -63,14 +64,13 @@ void df::LogManager::setLogStepCount(bool logStepCount) {
 
 int df::LogManager::writeLog(int logLevel, const char *fmt, ...) const {
 	if (logLevel >= this->log_level) {
-		// TODO: add tick if log_step_count true
 		// message head
 		if (log_time_string && log_step_count)
-			fprintf(p_file, "%s\tstep\t", getTimeString());
+			fprintf(p_file, "%s\t%i\t", getTimeString(), GM.getStepCount());
 		else if (log_time_string)
 			fprintf(p_file, "%s\t", getTimeString());
 		else if (log_step_count)
-			fprintf(p_file, "step\t");
+			fprintf(p_file, "%i\t", GM.getStepCount());
 		else
 			fprintf(p_file, "Message: ");
 
