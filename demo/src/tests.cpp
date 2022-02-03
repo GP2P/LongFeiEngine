@@ -5,6 +5,10 @@
 #include "Object.h"
 #include "ObjectList.h"
 #include "ObjectListIterator.h"
+#include "Event.h"
+#include "EventStep.h"
+#include "Tester.h"
+#include "WorldManager.h"
 
 int LMTests();
 
@@ -15,6 +19,10 @@ int VectorTests();
 int ObjectTests();
 
 int ObjectListTests();
+
+int EventTests();
+
+int WMTests();
 
 int main() {
 	std::cout << "Starting LongFei Engine..." << std::endl << std::endl;
@@ -58,12 +66,30 @@ int main() {
 		return -1;
 	} else
 		std::cout << "ObjectList Test passed with result: ok" << std::endl;
+
+	// Event Tests
+	int EventTestResult = EventTests();
+	if (EventTestResult != 0) {
+		std::cout << "Event test result: " << EventTestResult << std::endl;
+		return -1;
+	} else
+		std::cout << "Event Test passed with result: ok" << std::endl;
+
+	//WM Tests
+	int WMTestResult = WMTests();
+	if (WMTestResult != 0) {
+		std::cout << "WM test result: " << WMTestResult << std::endl;
+		return -1;
+	} else
+		std::cout << "WM Test passed with result: ok" << std::endl;
+
+	std::cout << "All tests passed!" << std::endl;
 	return 0;
 }
 
 int LMTests() {
 	// start LM
-	LM.setFlush(true);
+//	LM.setFlush(true);
 	LM.setLogTimeString(true);
 	LM.setLogStepCount(true);
 	if (LM.startUp() == 0) {
@@ -112,15 +138,22 @@ int VectorTests() {
 }
 
 int ObjectTests() {
-	df::Object o1 = df::Object();
+	Tester o1 = Tester();
 	o1.setPosition(df::Vector(1, 2));
+	o1.setPhoneNumber(123456789);
+	o1.setName("LongFei");
+	o1.setAge(1);
 	df::Object o2 = df::Object();
 	o2.setType("test");
 	if (o2.getType() == "test")
 		if (o1.getPosition() == df::Vector(1, 2)) {
 			o2.setId(3);
 			if (o2.getId() == 3)
-				return 0;
+				if (o1.getType() == "Tester")
+					if (o1.getAge() == 1)
+						if (o1.getName() == "LongFei")
+							if (o1.getPhoneNumber() == 123456789)
+								return 0;
 		}
 	return -1;
 }
@@ -158,6 +191,36 @@ int ObjectListTests() {
 							}
 						}
 			}
+	}
+	return -1;
+}
+
+int EventTests() {
+	df::EventStep Step = df::EventStep();
+	df::Event Event = df::Event();
+	Tester tester = Tester();
+	if (Step.getType() == "df::step") {
+		Step.setType("myStep");
+		if (Step.getType() == "myStep")
+			if (tester.getAge() == 0)
+				if (tester.eventHandler(&Step))
+					if (tester.getAge() == 1)
+						if (tester.eventHandler(&Event))
+							if (tester.getAge() == 0)
+								return 0;
+	}
+	return -1;
+}
+
+int WMTests() {
+	if (!WM.getAllObjects().isEmpty()) {
+		Tester tester = Tester();
+		if (!WM.getAllObjects().isEmpty()) {
+			tester.~Tester();
+			if (!WM.getAllObjects().isEmpty()) {
+				return 0;
+			}
+		}
 	}
 	return -1;
 }

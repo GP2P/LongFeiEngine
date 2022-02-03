@@ -14,7 +14,7 @@ find_package(SFML REQUIRED COMPONENTS graphics audio)
 file(GLOB_RECURSE DF_SRC src/*.cpp)
 
 # Create the library with the given sources (named the same as the project above)
-add_library(${PROJECT_NAME} ${DF_SRC} src/Manager.cpp src/Manager.h src/LogManager.cpp src/LogManager.h src/utility.cpp src/utility.h src/GameManager.cpp src/GameManager.h src/Clock.cpp src/Clock.h src/Vector.cpp src/Vector.h src/Object.cpp src/Object.h src/ObjectList.cpp src/ObjectList.h src/ObjectListIterator.cpp src/ObjectListIterator.h)
+add_library(${PROJECT_NAME} ${DF_SRC} src/Manager.cpp src/Manager.h src/LogManager.cpp src/LogManager.h src/utility.cpp src/utility.h src/GameManager.cpp src/GameManager.h src/Clock.cpp src/Clock.h src/Vector.cpp src/Vector.h src/Object.cpp src/Object.h src/ObjectList.cpp src/ObjectList.h src/ObjectListIterator.cpp src/ObjectListIterator.h src/Event.cpp src/Event.h src/EventStep.cpp src/EventStep.h src/WorldManager.cpp src/WorldManager.h)
 # Link SFML graphics and audio modules privately (eg the demo cannot reference sfml without depending on it itself.
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-audio)
 
@@ -24,7 +24,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-audio)
 file(GLOB_RECURSE DEMO_SRC demo/*.cpp)
 
 # Create an executable with the given sources
-add_executable(demo ${DEMO_SRC})
+add_executable(demo ${DEMO_SRC} demo/src/Tester.cpp demo/src/Tester.h)
 # Link the engine library (named same as project) to the demo executable
 target_link_libraries(demo PUBLIC ${PROJECT_NAME})
 # Add /src as a BUILD_INTERFACE which allows you to reference the headers without an absolute path (similar to if it was in the system include path)

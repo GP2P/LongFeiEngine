@@ -3,6 +3,7 @@
 
 #include <string>
 #include "Vector.h"
+#include "Event.h"
 
 namespace df {
 	class Object {
@@ -32,6 +33,9 @@ namespace df {
 		void setPosition(Vector position);
 
 		Vector getPosition() const;
+
+		// return 0 if ignored, else 1
+		virtual int eventHandler(const Event *p_event);
 	};
 }
 
