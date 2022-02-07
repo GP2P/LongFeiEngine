@@ -17,6 +17,8 @@ df::LogManager &df::LogManager::getInstance() {
 }
 
 int df::LogManager::startUp() {
+	if (LM.isStarted())
+		return 0;
 	p_file = fopen(LOGFILE_NAME.c_str(), "w");
 	if (p_file != nullptr) {
 		// generate log headers based on log style
@@ -36,15 +38,6 @@ void df::LogManager::shutDown() {
 	if (p_file != nullptr) {
 		if (fclose(p_file) == 0)
 			Manager::shutDown();
-		else
-			writeLog(5, "LogManager won't shut down: logfile can't be closed");
-	}
-}
-
-df::LogManager::~LogManager() {
-	if (p_file != nullptr) {
-		if (fclose(p_file) == 0)
-			Manager::~Manager();
 		else
 			writeLog(5, "LogManager won't shut down: logfile can't be closed");
 	}

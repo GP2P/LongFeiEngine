@@ -14,6 +14,8 @@ df::WorldManager &df::WorldManager::getInstance() {
 }
 
 int df::WorldManager::startUp() {
+	if (WM.isStarted())
+		return 0;
 	update_list.clear(); // clear the update list
 	delete_list.clear(); // clear the update list
 	return Manager::startUp();
@@ -48,7 +50,7 @@ int df::WorldManager::removeObject(df::Object *p_o) {
 		LM.writeLog(4, "WorldManager::removeObject(): NULL object");
 		return -1;
 	} else if (update_list.remove(p_o) == -1) {
-		LM.writeLog(4, "WorldManager::removeObject(): object not removed");
+		LM.writeLog(4, "WorldManager::removeObject(): object ID: %i not removed", p_o->getId());
 		return -1;
 	} else
 		return 0;

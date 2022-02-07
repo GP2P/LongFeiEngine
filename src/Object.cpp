@@ -12,7 +12,7 @@ df::Object::Object() {
 }
 
 df::Object::~Object() {
-	WM.markForDelete(this);
+	WM.removeObject(this);
 }
 
 void df::Object::setId(int id) {

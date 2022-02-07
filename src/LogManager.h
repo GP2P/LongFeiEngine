@@ -13,6 +13,7 @@ namespace df {
 	class LogManager : public Manager {
 
 	private:
+
 		LogManager();
 
 		LogManager(LogManager const &);
@@ -26,8 +27,6 @@ namespace df {
 		int log_level;
 
 	public:
-		// if logfile open, close it
-		~LogManager();
 
 		static LogManager &getInstance();
 
@@ -41,10 +40,8 @@ namespace df {
 		// set flush of logfile after each write
 		void setFlush(bool doFlush = true);
 
-		// default true
 		void setLogTimeString(bool logTimeString = true);
 
-		// default true
 		void setLogStepCount(bool logStepCount = true);
 
 		// return number of bytes written, -1 if error

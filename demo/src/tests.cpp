@@ -138,10 +138,10 @@ int VectorTests() {
 }
 
 int ObjectTests() {
-	Tester o1 = Tester();
+	Tester o1 = Tester(123, 0, "LongFei");
 	o1.setPosition(df::Vector(1, 2));
 	o1.setPhoneNumber(123456789);
-	o1.setName("LongFei");
+	o1.setName("o1");
 	o1.setAge(1);
 	df::Object o2 = df::Object();
 	o2.setType("test");
@@ -151,7 +151,7 @@ int ObjectTests() {
 			if (o2.getId() == 3)
 				if (o1.getType() == "Tester")
 					if (o1.getAge() == 1)
-						if (o1.getName() == "LongFei")
+						if (o1.getName() == "o1")
 							if (o1.getPhoneNumber() == 123456789)
 								return 0;
 		}
@@ -178,7 +178,8 @@ int ObjectListTests() {
 		if (oli.currentObject() == &o2)
 			if (ol.getCount() == 3) {
 				oli.last();
-				if (oli.currentObject() == &o3)
+				if (oli.currentObject() == &o3) {
+					oli.next();
 					if (oli.isDone())
 						if (ol.remove(&o2) == 1) {
 							ol.clear();
@@ -190,6 +191,7 @@ int ObjectListTests() {
 									return 0;
 							}
 						}
+				}
 			}
 	}
 	return -1;
@@ -213,13 +215,24 @@ int EventTests() {
 }
 
 int WMTests() {
+	// clear all Objects from WM
+	df::ObjectList list = df::ObjectList(WM.getAllObjects());
+	auto oli = df::ObjectListIterator(&list);
+	while (!oli.isDone()) {
+		WM.markForDelete(oli.currentObject());
+		oli.next();
+	}
+	WM.update();
+	if (!WM.getAllObjects().isEmpty())
+		return -1;
+
+	// add Tester(Object) to WM
+	Tester *tester = new Tester(1, 2, "3");
 	if (!WM.getAllObjects().isEmpty()) {
-		Tester tester = Tester();
-		if (!WM.getAllObjects().isEmpty()) {
-			tester.~Tester();
-			if (!WM.getAllObjects().isEmpty()) {
-				return 0;
-			}
+		WM.markForDelete(tester);
+		WM.update();
+		if (WM.getAllObjects().isEmpty()) {
+			return 0;
 		}
 	}
 	return -1;

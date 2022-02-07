@@ -27,7 +27,7 @@ void df::ObjectListIterator::next() {
 }
 
 bool df::ObjectListIterator::isDone() const {
-	return (index == p_list->count - 1);
+	return index == p_list->count;
 }
 
 df::Object *df::ObjectListIterator::currentObject() const {

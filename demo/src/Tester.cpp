@@ -15,7 +15,6 @@ Tester::Tester(int phone_number, int age, std::string name) {
 }
 
 Tester::~Tester() {
-	df::Object::~Object();
 }
 
 int Tester::getPhoneNumber() {

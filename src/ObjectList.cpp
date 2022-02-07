@@ -15,7 +15,7 @@ df::ObjectList::~ObjectList() {
 df::ObjectList::ObjectList(const df::ObjectList &other) {
 	p_list = (Object **) malloc(sizeof(Object *) * other.max_count);
 	if (p_list == NULL) {
-		LM.writeLog(5, "Error: ObjectList::ObjectList(): Out of memory.");
+		LM.writeLog(5, "ObjectList::ObjectList(): Error allocating memory");
 		return;
 	}
 	memcpy(p_list, other.p_list, sizeof(Object *) * other.max_count);

@@ -16,6 +16,8 @@ df::GameManager &df::GameManager::getInstance() {
 }
 
 int df::GameManager::startUp(int frameTimeMS) {
+	if (GM.isStarted())
+		return 0;
 	frame_time = frameTimeMS;
 	if (LM.getInstance().startUp() == -1) {
 		return -1;
