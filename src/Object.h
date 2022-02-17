@@ -4,6 +4,8 @@
 #include <string>
 #include "Vector.h"
 #include "Event.h"
+#include "Animation.h"
+#include "Box.h"
 
 namespace df {
 
@@ -19,11 +21,13 @@ namespace df {
 
 		int id;
 		std::string type;
+		Box box;
 		Vector position;
 		Vector direction;
 		float speed;
 		int altitude;
 		Solidness solidness;
+		Animation animation;
 
 	public:
 		// construct Object with default values
@@ -78,6 +82,17 @@ namespace df {
 		void setSolidness(Solidness solidness);
 
 		Solidness getSolidness() const;
+
+		// return 0 if ok, else -1
+		int setSprite(std::string spriteLabel);
+
+		void setAnimation(Animation animation);
+
+		Animation getAnimation() const;
+
+		void setBox(Box box);
+
+		Box getBox() const;
 	};
 }
 

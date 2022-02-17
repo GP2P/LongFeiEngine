@@ -1,11 +1,13 @@
 #include "Object.h"
 #include "WorldManager.h"
+#include "ResourceManager.h"
 
 df::Object::Object() {
 	static int count = 0;
 	count++;
 	id = count;
 	type = "Object";
+	box = Box(Vector(-0.5, -0.5), 1, 1);
 	position = Vector();
 	altitude = WM.MAX_ALTITUDE / 2;
 	direction = Vector();
@@ -46,7 +48,7 @@ int df::Object::eventHandler(const df::Event *p_event) {
 }
 
 int df::Object::draw() {
-	return 0;
+	return animation.draw(position);
 }
 
 int df::Object::getAltitude() const {
@@ -103,4 +105,29 @@ void df::Object::setSolidness(df::Solidness solidness) {
 
 df::Solidness df::Object::getSolidness() const {
 	return solidness;
+}
+
+int df::Object::setSprite(std::string spriteLabel) {
+	if (RM.getSprite(spriteLabel) == nullptr)
+		return -1;
+
+	animation.setSprite(RM.getSprite(spriteLabel));
+	setBox(animation.getBox());
+	return 0;
+}
+
+void df::Object::setAnimation(df::Animation animation) {
+	this->animation = animation;
+}
+
+df::Animation df::Object::getAnimation() const {
+	return animation;
+}
+
+void df::Object::setBox(df::Box box) {
+	this->box = box;
+}
+
+df::Box df::Object::getBox() const {
+	return box;
 }

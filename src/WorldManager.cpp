@@ -104,7 +104,8 @@ void df::WorldManager::draw() {
 	for (int alt = 0; alt <= WM.MAX_ALTITUDE; alt++) {
 		while (!oli.isDone()) {
 			if (oli.currentObject()->getAltitude() == alt)
-				oli.currentObject()->draw();
+				if (boxIntersectsBox(getWorldBox(oli.currentObject()), viewBoundary))
+					oli.currentObject()->draw();
 			oli.next();
 		}
 		oli.first();
@@ -122,8 +123,8 @@ int df::WorldManager::markForDelete(df::Object *p_o) {
 				LM.writeLog(2, "WorldManager::markForDelete(): object ID: %i already marked for deletion",
 				            p_o->getId());
 				return -1;
-			}
-			dli.next();
+			} else
+				dli.next();
 		}
 	}
 	if (delete_list.insert(p_o) == -1) {
@@ -139,7 +140,7 @@ df::ObjectList df::WorldManager::getCollisions(df::Object *p_o, df::Vector posit
 	while (!oli.isDone()) {
 		if (oli.currentObject()->isSolid())
 			if (oli.currentObject() != p_o)
-				if (positionsIntersect(oli.currentObject()->getPosition(), position))
+				if (boxIntersectsBox(getWorldBox(p_o, position), getWorldBox(oli.currentObject())))
 					result.insert(oli.currentObject());
 		oli.next();
 	}
@@ -147,6 +148,8 @@ df::ObjectList df::WorldManager::getCollisions(df::Object *p_o, df::Vector posit
 }
 
 int df::WorldManager::moveObject(df::Object *p_Object, df::Vector newPosition) {
+
+	// test for collisions
 	if (p_Object->isSolid()) {
 		auto ol = getCollisions(p_Object, newPosition);
 		if (!ol.isEmpty()) {
@@ -169,11 +172,72 @@ int df::WorldManager::moveObject(df::Object *p_Object, df::Vector newPosition) {
 		}
 	}
 
+	// move object
+	Box originalBox = getWorldBox(p_Object);
 	p_Object->setPosition(newPosition);
-	if (newPosition.getX() < 0 || newPosition.getX() > DM.getHorizontal() || newPosition.getY() < 0 ||
-	    newPosition.getY() > DM.getVertical()) {
+	Box newBox = getWorldBox(p_Object);
+
+	// adjust view boundary if following
+	if (p_focus_object == p_Object)
+		setViewCenter(p_Object->getPosition());
+
+	// check and send out of bounds event
+	if (boxIntersectsBox(originalBox, worldBoundary) && !boxIntersectsBox(newBox, worldBoundary)) {
 		EventOut eo;
 		p_Object->eventHandler(&eo);
 	}
+
 	return 0;
+}
+
+const df::Box &df::WorldManager::getWorldBoundary() const {
+	return worldBoundary;
+}
+
+void df::WorldManager::setWorldBoundary(const df::Box &worldBoundary) {
+	this->worldBoundary = worldBoundary;
+}
+
+const df::Box &df::WorldManager::getViewBoundary() const {
+	return viewBoundary;
+}
+
+void df::WorldManager::setViewBoundary(const df::Box &viewBoundary) {
+	this->viewBoundary = viewBoundary;
+}
+
+void df::WorldManager::setViewCenter(df::Vector newCenter) {
+	float x = newCenter.getX() - getViewBoundary().getWidth() / 2;
+	if (x + getViewBoundary().getWidth() > worldBoundary.getWidth())
+		x = worldBoundary.getWidth() - getViewBoundary().getWidth();
+	if (x < 0)
+		x = 0;
+
+	float y = newCenter.getY() - getViewBoundary().getHeight() / 2;
+	if (y + getViewBoundary().getHeight() > worldBoundary.getHeight())
+		y = worldBoundary.getHeight() - getViewBoundary().getHeight();
+	if (y < 0)
+		y = 0;
+
+	viewBoundary.setCorner(Vector(x, y));
+}
+
+int df::WorldManager::setViewFocus(df::Object *p_o) {
+	if (p_o == NULL) {
+		LM.writeLog(2, "WorldManager::setViewFocus(): NULL object");
+		p_focus_object = nullptr;
+		return 0;
+	}
+
+	ObjectListIterator oli = ObjectListIterator(&update_list);
+	while (!oli.isDone()) {
+		if (oli.currentObject() == p_o) {
+			p_focus_object = p_o;
+			setViewCenter(p_focus_object->getPosition());
+			return 0;
+		}
+		oli.next();
+	}
+
+	return -1;
 }

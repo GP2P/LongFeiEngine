@@ -13,6 +13,7 @@
 #include "Saucer.h"
 #include "Hero.h"
 #include "Star.h"
+#include "ResourceManager.h"
 
 int LMTests();
 
@@ -32,15 +33,30 @@ int DMTests();
 
 int tests();
 
+#define TEST(test_name) \
+  if (test_name) \
+    pass++; \
+  else \
+    fail++;
+
+int RMTests();
+
+bool testGood();
+
+bool testBad();
+
+bool testBigBad();
+
 void runDemo1();
 
 void runDemo2();
 
 int main() {
 	std::cout << "Running game demo:" << std::endl << std::endl;
-//	tests();
+	tests();
 //	DM.swapBuffers();
-	runDemo1();
+//	runDemo1();
+// 	runDemo2();
 }
 
 void runDemo1() {
@@ -56,14 +72,18 @@ void runDemo1() {
 	// Write game version information to logfile.
 	LM.writeLog(1, "Saucer Shoot Naiad");
 
+	// adjust view
+	WM.setWorldBoundary(df::Box(df::Vector(0, 0), 80, 50));
+	WM.setViewBoundary(df::Box(df::Vector(0, 0), 80, 24));
+
 	// Setup some objects.
+
+	// Create hero.
+	new Hero;
 
 	// Spawn some Stars.
 	for (int i = 0; i < 16; i++)
 		new Star;
-
-	// Create hero.
-	new Hero;
 
 	// Spawn some saucers to shoot.
 	for (int i = 0; i < 16; i++)
@@ -106,7 +126,7 @@ int tests() {
 	// LM Tests
 	int LMTestResult = LMTests();
 	if (LMTestResult != 3 + 8 + 13 + 13 + 38) {
-		std::cout << "LM src result: " << LMTestResult << std::endl;
+		std::cout << "LM test result: " << LMTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "LM Test passed with result: " << LMTestResult << " bytes written" << std::endl;
@@ -114,7 +134,7 @@ int tests() {
 	// GM Tests
 	int GMTestResult = GMTests();
 	if (GMTestResult != 0) {
-		std::cout << "GM src result: " << GMTestResult << std::endl;
+		std::cout << "GM test result: " << GMTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "GM Test passed with result: ok" << std::endl;
@@ -122,7 +142,7 @@ int tests() {
 	// Vector Tests
 	int VectorTestResult = VectorTests();
 	if (VectorTestResult != 0) {
-		std::cout << "Vector src result: " << VectorTestResult << std::endl;
+		std::cout << "Vector test result: " << VectorTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "Vector Test passed with result: ok" << std::endl;
@@ -130,7 +150,7 @@ int tests() {
 	// Object Tests
 	int ObjectTestResult = ObjectTests();
 	if (ObjectTestResult != 0) {
-		std::cout << "Object src result: " << ObjectTestResult << std::endl;
+		std::cout << "Object test result: " << ObjectTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "Object Test passed with result: ok" << std::endl;
@@ -138,7 +158,7 @@ int tests() {
 	// ObjectList and ObjectListIterator Tests
 	int ObjectListTestResult = ObjectListTests();
 	if (ObjectListTestResult != 0) {
-		std::cout << "ObjectList src result: " << ObjectListTestResult << std::endl;
+		std::cout << "ObjectList test result: " << ObjectListTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "ObjectList Test passed with result: ok" << std::endl;
@@ -146,7 +166,7 @@ int tests() {
 	// Event Tests
 	int EventTestResult = EventTests();
 	if (EventTestResult != 0) {
-		std::cout << "Event src result: " << EventTestResult << std::endl;
+		std::cout << "Event test result: " << EventTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "Event Test passed with result: ok" << std::endl;
@@ -154,7 +174,7 @@ int tests() {
 	// WM Tests
 	int WMTestResult = WMTests();
 	if (WMTestResult != 0) {
-		std::cout << "WM src result: " << WMTestResult << std::endl;
+		std::cout << "WM test result: " << WMTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "WM Test passed with result: ok" << std::endl;
@@ -162,10 +182,18 @@ int tests() {
 	// DM Tests
 	int DMTestResult = DMTests();
 	if (DMTestResult != 0) {
-		std::cout << "DM src result: " << DMTestResult << std::endl;
+		std::cout << "DM test result: " << DMTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "DM Test passed with result: ok" << std::endl;
+
+	// RM Tests
+	int RMTestResult = RMTests();
+	if (RMTestResult != 0) {
+		std::cout << "RM test result: " << RMTestResult << std::endl;
+		return -1;
+	} else
+		std::cout << "RM Test passed with result: ok" << std::endl;
 
 	std::cout << "All tests passed!" << std::endl;
 
@@ -332,4 +360,80 @@ int DMTests() {
 	DM.drawCh(df::Vector(0, 0), 'H', df::RED);
 	DM.drawString(df::Vector(10, 10), "ello, World!", df::CENTER_JUSTIFIED, df::RED);
 	return DM.swapBuffers();
+}
+
+int RMTests() {
+
+	// Start up LogManager.
+	if (LM.startUp()) {
+		LM.writeLog(5, "main(): Error starting log manager!");
+		return 1;
+	}
+
+	// Start up ResourceManager.
+	if (RM.startUp()) {
+		LM.writeLog(5, "main(): Error starting resource manager!");
+		return 1;
+	}
+
+	// Run tests.
+	int pass = 0, fail = 0;
+	TEST(testGood());
+	TEST(testBad());
+	TEST(testBigBad());
+	LM.writeLog(5, "----------------------");
+	LM.writeLog(5, "Summary: %d of %d tests pass.",
+	            pass, pass + fail);
+	if (fail != 0)
+		LM.writeLog(5, "FAILURE");
+	else
+		LM.writeLog(5, "SUCCESS");
+	LM.writeLog(5, "----------------------");
+
+	// Shut everything down.
+	RM.shutDown();
+	LM.shutDown();
+
+	return 0;
+}
+
+// Load good sprite.
+// Return TRUE if test passes, else FALSE.
+bool testGood() {
+	if (RM.loadSprite("sprites/good-spr.txt", "good") != 0) {
+		LM.writeLog(5, "%s: FAIL - Error loading good sprite!",
+		            __FUNCTION__);
+		return false;
+	}
+
+	LM.writeLog(5, "%s: PASS", __FUNCTION__);
+	return true;
+}
+
+// Load bad sprite.
+// Return TRUE if test passes, else FALSE.
+bool testBad() {
+
+	if (RM.loadSprite("sprites/bad-spr.txt", "bad") == 0) {
+		LM.writeLog(5, "%s: FAIL - Loaded bad sprite, but should not have!",
+		            __FUNCTION__);
+		return false;
+	}
+
+	LM.writeLog(5, "%s: PASS", __FUNCTION__);
+	return true;
+}
+
+// Load large, bad sprite.
+// Return TRUE if test passes, else FALSE.
+bool testBigBad() {
+
+	if (RM.loadSprite("sprites/map-spr.txt", "map") == 0) {
+		LM.writeLog(5, "%s: FAIL - Loaded map sprite, but should not have!",
+		            __FUNCTION__);
+		return false;
+	}
+
+	LM.writeLog(5, "%s: PASS", __FUNCTION__);
+	return true;
 }

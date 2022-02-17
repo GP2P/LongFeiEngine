@@ -55,6 +55,31 @@ void df::LogManager::setLogStepCount(bool logStepCount) {
 	log_step_count = logStepCount;
 }
 
+int df::LogManager::writeLog(const char *fmt, ...) const {
+	// message head
+	if (log_time_string && log_step_count)
+		fprintf(p_file, "%s\t%i\t", getTimeString(), GM.getStepCount());
+	else if (log_time_string)
+		fprintf(p_file, "%s\t", getTimeString());
+	else if (log_step_count)
+		fprintf(p_file, "%i\t", GM.getStepCount());
+	else
+		fprintf(p_file, "Message: ");
+
+	// message body
+	va_list args;
+	va_start(args, fmt);
+	int numOfBytesWritten = vfprintf(p_file, fmt, args);
+	va_end(args);
+	fprintf(p_file, "\n");
+
+	// flush output
+	if (do_flush) {
+		fflush(p_file);
+	}
+	return numOfBytesWritten;
+}
+
 int df::LogManager::writeLog(int logLevel, const char *fmt, ...) const {
 	if (logLevel >= this->log_level) {
 		// message head

@@ -27,7 +27,6 @@
 #include "ObjectListIterator.h"
 
 Saucer::Saucer() {
-
 	// Set object type.
 	setType("Saucer");
 
@@ -149,7 +148,6 @@ void Saucer::moveToStart() {
 	}
 #endif
 
-//  LM.writeLog(1, "Saucer: moveToStart: %f, %f", temp_pos.getX(), temp_pos.getY());
 	WM.moveObject(this, temp_pos);
 }
 

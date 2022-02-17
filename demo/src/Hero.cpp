@@ -44,6 +44,8 @@ Hero::Hero() {
 	fire_slowdown = 15;
 	fire_countdown = fire_slowdown;
 
+	WM.setViewFocus(this);
+
 	nuke_count = 1;
 }
 
@@ -118,6 +120,8 @@ void Hero::kbd(const df::EventKeyboard *p_keyboard_event) {
 			if (p_keyboard_event->getKeyboardAction() == df::KEY_PRESSED)
 				WM.markForDelete(this);
 			break;
+		default:
+			break;
 	};
 
 	return;
@@ -131,7 +135,6 @@ void Hero::move(int dy) {
 	if ((new_pos.getY() >= 0) &&
 	    (new_pos.getY() < DM.getVertical()))
 		WM.moveObject(this, new_pos);
-	LM.writeLog(0, "Hero moved to (%f, %f)", getPosition().getX(), getPosition().getY());
 }
 
 // Fire bullet towards target.

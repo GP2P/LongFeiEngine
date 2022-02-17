@@ -46,7 +46,11 @@ namespace df {
 
 		// return number of bytes written, -1 if error
 		// log levels: 5 - error; 4 - repeated error; 3 - debug; 2 - repeated debug; 1 - log
-		int writeLog(int logLevel = INT_MAX, const char *fmt = "log", ...) const;
+		int writeLog(const char *fmt = "log", ...) const;
+
+		// return number of bytes written, -1 if error
+		// log levels: 5 - error; 4 - repeated error; 3 - debug; 2 - repeated debug; 1 - log
+		int writeLog(int logLevel, const char *fmt = "log", ...) const;
 	};
 }
 

@@ -17,6 +17,9 @@ namespace df {
 
 		ObjectList update_list;
 		ObjectList delete_list;
+		Box worldBoundary;
+		Box viewBoundary;
+		Object *p_focus_object;
 
 	public:
 
@@ -48,6 +51,20 @@ namespace df {
 
 		// return 0 if moved, else −1
 		int moveObject(Object *p_Object, Vector newPosition);
+
+		const Box &getWorldBoundary() const;
+
+		void setWorldBoundary(const Box &worldBoundary);
+
+		const Box &getViewBoundary() const;
+
+		void setViewBoundary(const Box &viewBoundary);
+
+		// view edge will not go beyond world boundary
+		void setViewCenter(Vector newCenter);
+
+		// set to NULL to stop following
+		int setViewFocus(Object *p_o);
 	};
 }
 

@@ -1,5 +1,6 @@
 #include "DisplayManager.h"
 #include "LogManager.h"
+#include "utility.h"
 
 df::DisplayManager::DisplayManager() {
 	p_window = nullptr;
@@ -25,7 +26,7 @@ int df::DisplayManager::startUp() {
 	                                WINDOW_TITLE_DEFAULT, WINDOW_STYLE_DEFAULT);
 
 	// hide mouse cursor by default
-	p_window->setMouseCursorVisible(true); // TODO change to false
+	p_window->setMouseCursorVisible(false);
 
 	// Vsync on by default
 	p_window->setVerticalSyncEnabled(true);
@@ -51,7 +52,7 @@ int df::DisplayManager::drawCh(df::Vector world_pos, char ch, Color color) const
 		return -1;
 
 	// convert world position to pixel position
-	Vector pixel_pos = spacesToPixels(world_pos);
+	Vector pixel_pos = spacesToPixels(worldToView(world_pos));
 
 	// draw rectangle at pixel_pos with color
 	static sf::RectangleShape rectangle;
@@ -108,7 +109,7 @@ int df::DisplayManager::drawCh(df::Vector world_pos, char ch, unsigned char r, u
 		return -1;
 
 	// convert world position to pixel position
-	Vector pixel_pos = spacesToPixels(world_pos);
+	Vector pixel_pos = spacesToPixels(worldToView(world_pos));
 
 	// draw rectangle at pixel_pos with color
 	static sf::RectangleShape rectangle;

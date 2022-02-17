@@ -1,11 +1,11 @@
 #include <ctime>
 #include <cstdio>
 #include "utility.h"
+#include "WorldManager.h"
 
 char *df::getTimeString() {
 	static char time_str[30];
 
-//	TODO: error check system calls
 	time_t now;
 	time(&now);
 	struct tm *p_time = localtime(&now);
@@ -19,4 +19,29 @@ char *df::getTimeString() {
 
 bool df::positionsIntersect(df::Vector p1, df::Vector p2) {
 	return (abs(p1.getX() - p2.getX()) <= 1) && (abs(p1.getY() - p2.getY()) <= 1);
+}
+
+bool df::boxIntersectsBox(Box b1, Box b2) {
+	return (b1.getCorner().getX() <= b2.getCorner().getX() + b2.getWidth() &&
+	        b1.getCorner().getX() + b1.getWidth() >= b2.getCorner().getX() &&
+	        b1.getCorner().getY() <= b2.getCorner().getY() + b2.getHeight() &&
+	        b1.getCorner().getY() + b1.getHeight() >= b2.getCorner().getY());
+}
+
+df::Box df::getWorldBox(const df::Object *p_o) {
+	return getWorldBox(p_o, p_o->getPosition());
+}
+
+df::Box df::getWorldBox(const df::Object *p_o, df::Vector position) {
+	df::Box oriBox = p_o->getBox();
+	df::Vector oriCorner = oriBox.getCorner();
+	df::Box result = Box(df::Vector(oriCorner.getX() + position.getX(), oriCorner.getY() + position.getY()),
+	                     oriBox.getWidth(), oriBox.getHeight());
+	return {df::Vector(oriCorner.getX() + position.getX(), oriCorner.getY() + position.getY()),
+	        oriBox.getWidth(), oriBox.getHeight()};
+}
+
+df::Vector df::worldToView(Vector worldPosition) {
+	return {worldPosition.getX() - WM.getViewBoundary().getCorner().getX(),
+	        worldPosition.getY() - WM.getViewBoundary().getCorner().getY()};
 }
