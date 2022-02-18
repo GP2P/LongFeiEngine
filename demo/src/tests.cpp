@@ -9,6 +9,10 @@
 #include "EventStep.h"
 #include "Tester.h"
 #include "WorldManager.h"
+#include "DisplayManager.h"
+#include "Saucer.h"
+#include "Hero.h"
+#include "Star.h"
 
 int LMTests();
 
@@ -24,13 +28,85 @@ int EventTests();
 
 int WMTests();
 
+int DMTests();
+
+int tests();
+
+void runDemo1();
+
+void runDemo2();
+
 int main() {
+	std::cout << "Running game demo:" << std::endl << std::endl;
+//	tests();
+//	DM.swapBuffers();
+	runDemo1();
+}
+
+void runDemo1() {
+	// Start up game manager.
+	if (GM.startUp()) {
+		LM.writeLog(5, "Error starting game manager!");
+		GM.shutDown();
+	}
+
+	// Set flush of logfile during development (when done, make false).
+	LM.setFlush(true);
+
+	// Write game version information to logfile.
+	LM.writeLog(1, "Saucer Shoot Naiad");
+
+	// Setup some objects.
+
+	// Spawn some Stars.
+	for (int i = 0; i < 16; i++)
+		new Star;
+
+	// Create hero.
+	new Hero;
+
+	// Spawn some saucers to shoot.
+	for (int i = 0; i < 16; i++)
+		new Saucer;
+
+	// Run game (this blocks until game loop is over).
+	GM.run();
+
+	// Shut everything down.
+	GM.shutDown();
+}
+
+void runDemo2() {
+	// Start up game manager.
+	if (GM.startUp()) {
+		LM.writeLog(5, "Error starting game manager!");
+		GM.shutDown();
+	}
+
+	// Set flush of logfile during development (when done, make false).
+	LM.setFlush(true);
+
+	// Write game version information to logfile.
+	LM.writeLog(1, "my demo");
+
+	// Setup some objects.
+
+	new Tester;
+
+	// Run game (this blocks until game loop is over).
+	GM.run();
+
+	// Shut everything down.
+	GM.shutDown();
+}
+
+int tests() {
 	std::cout << "Starting LongFei Engine..." << std::endl << std::endl;
 
 	// LM Tests
 	int LMTestResult = LMTests();
 	if (LMTestResult != 3 + 8 + 13 + 13 + 38) {
-		std::cout << "LM test result: " << LMTestResult << std::endl;
+		std::cout << "LM src result: " << LMTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "LM Test passed with result: " << LMTestResult << " bytes written" << std::endl;
@@ -38,7 +114,7 @@ int main() {
 	// GM Tests
 	int GMTestResult = GMTests();
 	if (GMTestResult != 0) {
-		std::cout << "GM test result: " << GMTestResult << std::endl;
+		std::cout << "GM src result: " << GMTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "GM Test passed with result: ok" << std::endl;
@@ -46,7 +122,7 @@ int main() {
 	// Vector Tests
 	int VectorTestResult = VectorTests();
 	if (VectorTestResult != 0) {
-		std::cout << "Vector test result: " << VectorTestResult << std::endl;
+		std::cout << "Vector src result: " << VectorTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "Vector Test passed with result: ok" << std::endl;
@@ -54,7 +130,7 @@ int main() {
 	// Object Tests
 	int ObjectTestResult = ObjectTests();
 	if (ObjectTestResult != 0) {
-		std::cout << "Object test result: " << ObjectTestResult << std::endl;
+		std::cout << "Object src result: " << ObjectTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "Object Test passed with result: ok" << std::endl;
@@ -62,7 +138,7 @@ int main() {
 	// ObjectList and ObjectListIterator Tests
 	int ObjectListTestResult = ObjectListTests();
 	if (ObjectListTestResult != 0) {
-		std::cout << "ObjectList test result: " << ObjectListTestResult << std::endl;
+		std::cout << "ObjectList src result: " << ObjectListTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "ObjectList Test passed with result: ok" << std::endl;
@@ -70,20 +146,29 @@ int main() {
 	// Event Tests
 	int EventTestResult = EventTests();
 	if (EventTestResult != 0) {
-		std::cout << "Event test result: " << EventTestResult << std::endl;
+		std::cout << "Event src result: " << EventTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "Event Test passed with result: ok" << std::endl;
 
-	//WM Tests
+	// WM Tests
 	int WMTestResult = WMTests();
 	if (WMTestResult != 0) {
-		std::cout << "WM test result: " << WMTestResult << std::endl;
+		std::cout << "WM src result: " << WMTestResult << std::endl;
 		return -1;
 	} else
 		std::cout << "WM Test passed with result: ok" << std::endl;
 
+	// DM Tests
+	int DMTestResult = DMTests();
+	if (DMTestResult != 0) {
+		std::cout << "DM src result: " << DMTestResult << std::endl;
+		return -1;
+	} else
+		std::cout << "DM Test passed with result: ok" << std::endl;
+
 	std::cout << "All tests passed!" << std::endl;
+
 	return 0;
 }
 
@@ -144,8 +229,8 @@ int ObjectTests() {
 	o1.setName("o1");
 	o1.setAge(1);
 	df::Object o2 = df::Object();
-	o2.setType("test");
-	if (o2.getType() == "test")
+	o2.setType("src");
+	if (o2.getType() == "src")
 		if (o1.getPosition() == df::Vector(1, 2)) {
 			o2.setId(3);
 			if (o2.getId() == 3)
@@ -163,7 +248,7 @@ int ObjectListTests() {
 	if (!ol.isEmpty())
 		return -1;
 	df::Object o1 = df::Object();
-	o1.setType("test");
+	o1.setType("src");
 	ol.insert(&o1);
 	auto oli = df::ObjectListIterator(&ol);
 	df::Object o2 = df::Object();
@@ -236,4 +321,15 @@ int WMTests() {
 		}
 	}
 	return -1;
+}
+
+int DMTests() {
+	DM.startUp();
+	if (DM.getHorizontalPixels() != 1024 || DM.getVerticalPixels() != 768 || DM.getHorizontal() != 80 ||
+	    DM.getVertical() != 24)
+		return -1;
+	auto *tester = new Tester(1, 2, "Hello World Text");
+	DM.drawCh(df::Vector(0, 0), 'H', df::RED);
+	DM.drawString(df::Vector(10, 10), "ello, World!", df::CENTER_JUSTIFIED, df::RED);
+	return DM.swapBuffers();
 }

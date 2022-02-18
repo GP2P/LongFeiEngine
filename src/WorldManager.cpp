@@ -1,6 +1,10 @@
 #include "WorldManager.h"
 #include "LogManager.h"
 #include "ObjectListIterator.h"
+#include "utility.h"
+#include "EventCollision.h"
+#include "DisplayManager.h"
+#include "EventOut.h"
 
 df::WorldManager::WorldManager() {
 	update_list.clear();
@@ -18,6 +22,7 @@ int df::WorldManager::startUp() {
 		return 0;
 	update_list.clear(); // clear the update list
 	delete_list.clear(); // clear the update list
+	LM.writeLog(1, "WorldManager::startUp(): WorldManager started successfully");
 	return Manager::startUp();
 }
 
@@ -72,22 +77,103 @@ df::ObjectList df::WorldManager::objectsOfType(std::string type) const {
 }
 
 void df::WorldManager::update() {
+	// update all objects in the update list
+	auto oli = ObjectListIterator(&update_list);
+	while (!oli.isDone()) {
+		Vector newPos = oli.currentObject()->predictPosition();
+		if (newPos != oli.currentObject()->getPosition())
+			moveObject(oli.currentObject(), newPos);
+		oli.next();
+	}
+
 	// delete all objects in the delete list
 	auto dli = ObjectListIterator(&delete_list);
 	while (!dli.isDone()) {
-		delete dli.currentObject();
+		try {
+			delete dli.currentObject();
+		} catch (std::exception &e) {
+			LM.writeLog(1, "WorldManager::update(): %s", e.what());
+		}
 		dli.next();
 	}
 	delete_list.clear();
+}
+
+void df::WorldManager::draw() {
+	auto oli = ObjectListIterator(&update_list);
+	for (int alt = 0; alt <= WM.MAX_ALTITUDE; alt++) {
+		while (!oli.isDone()) {
+			if (oli.currentObject()->getAltitude() == alt)
+				oli.currentObject()->draw();
+			oli.next();
+		}
+		oli.first();
+	}
 }
 
 int df::WorldManager::markForDelete(df::Object *p_o) {
 	if (p_o == NULL) {
 		LM.writeLog(4, "WorldManager::markForDelete(): NULL object");
 		return -1;
-	} else if (delete_list.insert(p_o) == -1) {
+	} else {
+		ObjectListIterator dli = ObjectListIterator(&delete_list);
+		while (!dli.isDone()) {
+			if (dli.currentObject() == p_o) {
+				LM.writeLog(2, "WorldManager::markForDelete(): object ID: %i already marked for deletion",
+				            p_o->getId());
+				return -1;
+			}
+			dli.next();
+		}
+	}
+	if (delete_list.insert(p_o) == -1) {
 		LM.writeLog(4, "WorldManager::markForDelete(): object not marked");
 		return -1;
 	} else
 		return 0;
+}
+
+df::ObjectList df::WorldManager::getCollisions(df::Object *p_o, df::Vector position) const {
+	ObjectList result = ObjectList();
+	auto oli = ObjectListIterator(&update_list);
+	while (!oli.isDone()) {
+		if (oli.currentObject()->isSolid())
+			if (oli.currentObject() != p_o)
+				if (positionsIntersect(oli.currentObject()->getPosition(), position))
+					result.insert(oli.currentObject());
+		oli.next();
+	}
+	return result;
+}
+
+int df::WorldManager::moveObject(df::Object *p_Object, df::Vector newPosition) {
+	if (p_Object->isSolid()) {
+		auto ol = getCollisions(p_Object, newPosition);
+		if (!ol.isEmpty()) {
+			bool canMove = true;
+			auto oli = ObjectListIterator(&ol);
+			while (!oli.isDone()) {
+				Object *p_O2 = oli.currentObject();
+				EventCollision ec(p_Object, p_O2, newPosition);
+				p_Object->eventHandler(&ec);
+				p_O2->eventHandler(&ec);
+				if (p_Object->getSolidness() == p_O2->getSolidness() == HARD)
+					canMove = false;
+				oli.next();
+			}
+
+			if (!canMove) {
+				LM.writeLog(4, "WorldManager::moveObject(): object ID: %i not moved", p_Object->getId());
+				return -1;
+			}
+		}
+	}
+
+	p_Object->setPosition(newPosition);
+	if (newPosition.getX() < 0 || newPosition.getX() > DM.getHorizontal() || newPosition.getY() < 0 ||
+	    newPosition.getY() > DM.getVertical()) {
+		EventOut eo;
+		p_Object->eventHandler(&eo);
+	}
+	return 0;
 }

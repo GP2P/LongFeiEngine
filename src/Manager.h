@@ -2,6 +2,7 @@
 #define DF_MANAGER_H
 
 #include <string>
+#include "Event.h"
 
 namespace df {
 
@@ -27,6 +28,8 @@ namespace df {
 		virtual void shutDown();
 
 		bool isStarted() const;
+
+		int onEvent(const df::Event *p_event) const;
 	};
 
 }

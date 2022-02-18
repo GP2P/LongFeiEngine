@@ -35,6 +35,11 @@ df::Object *df::ObjectListIterator::currentObject() const {
 }
 
 df::ObjectListIterator &df::ObjectListIterator::operator=(const df::ObjectListIterator &other) {
+	if (this != &other) {
+		this->p_list = other.p_list;
+		this->index = other.index;
+	}
+	return *this;
 }
 
 void df::ObjectListIterator::setList(const df::ObjectList *p_list) {

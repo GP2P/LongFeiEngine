@@ -14,7 +14,7 @@ find_package(SFML REQUIRED COMPONENTS graphics audio)
 file(GLOB_RECURSE DF_SRC src/*.cpp)
 
 # Create the library with the given sources (named the same as the project above)
-add_library(${PROJECT_NAME} ${DF_SRC} src/Manager.cpp src/Manager.h src/LogManager.cpp src/LogManager.h src/utility.cpp src/utility.h src/GameManager.cpp src/GameManager.h src/Clock.cpp src/Clock.h src/Vector.cpp src/Vector.h src/Object.cpp src/Object.h src/ObjectList.cpp src/ObjectList.h src/ObjectListIterator.cpp src/ObjectListIterator.h src/Event.cpp src/Event.h src/EventStep.cpp src/EventStep.h src/WorldManager.cpp src/WorldManager.h)
+add_library(${PROJECT_NAME} ${DF_SRC} src/Manager.cpp src/Manager.h src/LogManager.cpp src/LogManager.h src/utility.cpp src/utility.h src/GameManager.cpp src/GameManager.h src/Clock.cpp src/Clock.h src/Vector.cpp src/Vector.h src/Object.cpp src/Object.h src/ObjectList.cpp src/ObjectList.h src/ObjectListIterator.cpp src/ObjectListIterator.h src/Event.cpp src/Event.h src/EventStep.cpp src/EventStep.h src/WorldManager.cpp src/WorldManager.h src/DisplayManager.cpp src/DisplayManager.h src/Color.h src/InputManager.cpp src/InputManager.h src/EventKeyboard.cpp src/EventKeyboard.h src/EventMouse.cpp src/EventMouse.h src/EventCollision.cpp src/EventCollision.h src/EventOut.cpp src/EventOut.h)
 # Link SFML graphics and audio modules privately (eg the demo cannot reference sfml without depending on it itself.
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-audio)
 
@@ -22,6 +22,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE sfml-graphics sfml-audio)
 ## Compile a demo project to an executable with a dependency on our library.
 
 file(GLOB_RECURSE DEMO_SRC demo/*.cpp)
+
+include_directories(/opt/homebrew/Cellar/sfml/2.5.1_1/include)
 
 # Create an executable with the given sources
 add_executable(demo ${DEMO_SRC} demo/src/Tester.cpp demo/src/Tester.h)

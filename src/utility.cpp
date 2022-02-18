@@ -16,3 +16,7 @@ char *df::getTimeString() {
 	        p_time->tm_sec);
 	return time_str;
 }
+
+bool df::positionsIntersect(df::Vector p1, df::Vector p2) {
+	return (abs(p1.getX() - p2.getX()) <= 1) && (abs(p1.getY() - p2.getY()) <= 1);
+}

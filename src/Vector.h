@@ -1,6 +1,8 @@
 #ifndef DF_VECTOR_H
 #define DF_VECTOR_H
 
+#include <string>
+
 namespace df {
 
 	class Vector {
@@ -18,9 +20,11 @@ namespace df {
 		Vector();
 
 		void setX(float newX);
+
 		float getX() const;
 
 		void setY(float newY);
+
 		float getY() const;
 
 		void setXY(float newX, float newY);

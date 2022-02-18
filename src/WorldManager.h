@@ -19,6 +19,9 @@ namespace df {
 		ObjectList delete_list;
 
 	public:
+
+		const int MAX_ALTITUDE = 4;
+
 		static WorldManager &getInstance();
 
 		int startUp() override;
@@ -37,7 +40,14 @@ namespace df {
 
 		void update();
 
+		void draw();
+
 		int markForDelete(Object *p_o);
+
+		ObjectList getCollisions(Object *p_o, Vector position) const;
+
+		// return 0 if moved, else −1
+		int moveObject(Object *p_Object, Vector newPosition);
 	};
 }
 

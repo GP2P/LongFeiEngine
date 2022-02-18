@@ -29,7 +29,9 @@ public:
 
 	void setName(std::string new_name);
 
-	int eventHandler(const df::Event *p_e);
+	int eventHandler(const df::Event *p_e) override;
+
+	int draw() override;
 };
 
 #endif //DF_TESTER_H

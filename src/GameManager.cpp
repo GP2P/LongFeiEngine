@@ -2,6 +2,9 @@
 #include "LogManager.h"
 #include "Clock.h"
 #include "WorldManager.h"
+#include "EventStep.h"
+#include "DisplayManager.h"
+#include "InputManager.h"
 
 df::GameManager::GameManager() {
 	game_over = false;
@@ -23,8 +26,14 @@ int df::GameManager::startUp(int frameTimeMS) {
 		return -1;
 	} else if (WM.getInstance().startUp() == -1) {
 		return -1;
-	} else
-		return Manager::startUp();
+	} else if (DM.getInstance().startUp() == -1) {
+		return -1;
+	} else if (IM.getInstance().startUp() == -1) {
+		return -1;
+	}
+
+	LM.writeLog(1, "GameManager::startUp(): GameManager started successfully");
+	return Manager::startUp();
 }
 
 void df::GameManager::shutDown() {
@@ -37,18 +46,37 @@ void df::GameManager::run() {
 	Clock clock;
 	long int adjust_time = 0;
 	while (!game_over) {
+		// start timer
 		clock.delta();
-		// do something
+
+		// increment step
 		step_count++;
+
+		// provide step event to all Objects
+		EventStep s;
+		onEvent(&s);
+
+		// process input
+		IM.getInput();
+
+		// update all Objects
+		WM.update();
+
+		// draw all Objects
+		WM.draw();
+
+		// display all Objects
+		DM.swapBuffers();
+
+		// check timer
 		long int time_elapsed = clock.split();
 		long int intended_sleep_time = frame_time * 1000 - time_elapsed - adjust_time;
-//		LM.writeLog(2, "run(): time elapsed %ld microsecond", time_elapsed);
+
 		if (intended_sleep_time > 0) {
 			// sleep
 			struct timespec sleep_time;
 			sleep_time.tv_sec = 0;
 			sleep_time.tv_nsec = intended_sleep_time * 1000;
-//			LM.writeLog(2, "GameManager::run(): intended sleep time: %ld ", intended_sleep_time);
 			nanosleep(&sleep_time, NULL);
 		}
 		long int actual_sleep_time = clock.split();
