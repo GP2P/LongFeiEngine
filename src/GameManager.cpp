@@ -5,6 +5,7 @@
 #include "EventStep.h"
 #include "DisplayManager.h"
 #include "InputManager.h"
+#include "ResourceManager.h"
 
 df::GameManager::GameManager() {
 	game_over = false;
@@ -29,6 +30,8 @@ int df::GameManager::startUp(int frameTimeMS) {
 	} else if (DM.getInstance().startUp() == -1) {
 		return -1;
 	} else if (IM.getInstance().startUp() == -1) {
+		return -1;
+	} else if (RM.getInstance().startUp() == -1) {
 		return -1;
 	}
 
@@ -64,6 +67,15 @@ void df::GameManager::run() {
 
 		// draw all Objects
 		WM.draw();
+
+		for (int i = 0; i < WM.getViewBoundary().getHeight(); i++) {
+			DM.drawCh(df::Vector(WM.getViewBoundary().getWidth(), i), '|', df::GREEN);
+		}
+
+		for (int i = 0; i < WM.getViewBoundary().getWidth(); i++) {
+			DM.drawCh(df::Vector(i, 0), '-', df::GREEN);
+			DM.drawCh(df::Vector(i, WM.getViewBoundary().getHeight() - 1), '-', df::GREEN);
+		}
 
 		// display all Objects
 		DM.swapBuffers();

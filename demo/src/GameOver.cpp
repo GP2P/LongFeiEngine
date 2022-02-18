@@ -3,37 +3,43 @@
 //
 
 // Engine includes.
-#include "DisplayManager.h"
 #include "EventStep.h"
 #include "GameManager.h"
 #include "LogManager.h"
+#include "ResourceManager.h"
 #include "WorldManager.h"
 
 // Game includes.
-#include "DisplayManager.h"
 #include "GameOver.h"
+#include "GameStart.h"
 
 GameOver::GameOver() {
 
 	setType("GameOver");
 
-	// Put in center of screen.
-	int world_horiz = (int) DM.getHorizontal();
-	int world_vert = (int) DM.getVertical();
-	df::Vector p((float) (world_horiz / 2.0f), (float) (world_vert / 2.0f));
-	setPosition(p);
+	// Link to "message" sprite.
+	if (setSprite("gameover") == 0)
+		time_to_live = getAnimation().getSprite()->getFrameCount() * 15;
+	else
+		time_to_live = 0;
 
-	// Exit after about 3 seconds.
-	time_to_live = 100;
-
-	// Make like a View Object
-	setSolidness(df::SPECTRAL);
-	setAltitude(WM.MAX_ALTITUDE);
+	// Put in center of window.
+	setLocation(df::CENTER_CENTER);
 
 	// Register for step event.
 #ifdef DF_REGISTER_INTEREST
 	registerInterest(df::STEP_EVENT);
 #endif
+
+	// Play "game over" sound.
+	df::Sound *p_sound = RM.getSound("game over");
+	p_sound->play();
+}
+
+// When done, game over so shut down.
+GameOver::~GameOver() {
+	WM.markForDelete(this);
+	GM.setGameOver();
 }
 
 // Handle event.
@@ -54,11 +60,11 @@ void GameOver::step() {
 	time_to_live--;
 	if (time_to_live <= 0) {
 		WM.markForDelete(this);
-		GM.setGameOver();
 	}
 }
 
+// Override default draw so as not to display "value".
 int GameOver::draw() {
-	DM.drawString(getPosition(), "Game Over!", df::CENTER_JUSTIFIED, df::WHITE);
+	df::Object::draw();
 	return 0;
 }

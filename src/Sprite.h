@@ -48,7 +48,7 @@ namespace df {
 
 		void setSlowdown(int slowdown);
 
-		const std::string &getLabel() const;
+		std::string getLabel() const;
 
 		void setLabel(const std::string label);
 

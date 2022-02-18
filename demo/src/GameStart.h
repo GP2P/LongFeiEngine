@@ -1,23 +1,23 @@
 //
-// GameOver.h
+// GameStart.h
 //
 
+#include "Music.h"
 #include "ViewObject.h"
 
-class GameOver : public df::ViewObject {
+class GameStart : public df::ViewObject {
 
 private:
-	int time_to_live;
 	df::Music *p_music;
 
-	void step();
+	void start();
 
 public:
-	GameOver();
-
-	~GameOver();
+	GameStart();
 
 	int eventHandler(const df::Event *p_e);
 
 	int draw();
+
+	void playMusic();
 };

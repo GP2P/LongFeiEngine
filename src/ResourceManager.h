@@ -22,8 +22,6 @@ namespace df {
 
 		void operator=(ResourceManager const &);
 
-		Sprite *p_sprite[MAX_SPRITES];
-		int spriteCount;
 		Sound sound[MAX_SOUNDS];
 		int soundCount;
 		Music music[MAX_MUSICS];
@@ -36,18 +34,6 @@ namespace df {
 
 		// free up any allocated Sprites, Music and Sounds
 		void shutDown() override;
-
-		// load Sprite from file, assign indicated label to Sprite
-		// return 0 if ok, else -1
-//		int loadSprite(std::string filename, std::string label);
-
-		// unload Sprite with indicated label
-		// return 0 if ok, else -1
-//		int unloadSprite(std::string label);
-
-		// find Sprite with indicated label
-		// return pointer to it if found, else NULL
-//		Sprite *getSprite(std::string label) const;
 
 		// load sound from file
 		// return 0 if ok, else -1

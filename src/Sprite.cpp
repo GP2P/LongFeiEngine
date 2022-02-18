@@ -19,6 +19,12 @@ df::Sprite::~Sprite() {
 }
 
 df::Sprite::Sprite(int maxFrameCount) {
+	width = 0;
+	height = 0;
+	frameCount = 0;
+	color = COLOR_DEFAULT;
+	slowdown = 1;
+	label = "";
 	this->maxFrameCount = maxFrameCount;
 	frames = new Frame[maxFrameCount];
 }
@@ -57,8 +63,8 @@ void df::Sprite::setColor(df::Color color) {
 
 df::Frame *df::Sprite::getFrame(int index) const {
 	if (index < 0 || index >= maxFrameCount) {
-		Frame empty(0, 0, "");
-		return &empty;
+		Frame *empty = new Frame(0, 0, "");
+		return empty;
 	}
 	return &frames[index];
 }
@@ -71,7 +77,7 @@ void df::Sprite::setSlowdown(int slowdown) {
 	this->slowdown = slowdown;
 }
 
-const std::string &df::Sprite::getLabel() const {
+std::string df::Sprite::getLabel() const {
 	return label;
 }
 

@@ -3,10 +3,10 @@
 //
 
 // Engine includes.
-#include "DisplayManager.h"
-#include "EventOut.h"
 #include "LogManager.h"
 #include "WorldManager.h"
+#include "ResourceManager.h"
+#include "EventOut.h"
 
 // Game includes.
 #include "Bullet.h"
@@ -14,7 +14,10 @@
 
 Bullet::Bullet(df::Vector hero_pos) {
 
-	// Set object properties.
+	// Link to "bullet" sprite.
+	setSprite("bullet");
+
+	// Set other object properties.
 	setType("Bullet");
 	setVelocity(df::Vector(1, 0)); // Move 1 space right every game loop.
 
@@ -42,18 +45,16 @@ int Bullet::eventHandler(const df::Event *p_e) {
 	return 0;
 }
 
-// If bullet moves outside world, mark self for deletion.
+// If Bullet moves outside world, mark self for deletion.
 void Bullet::out() {
 	WM.markForDelete(this);
 }
 
-// If bullet hits Saucer, mark Saucer and bullet for deletion.
-void Bullet::hit(const df::EventCollision *p_c) {
-	WM.markForDelete(p_c->getObject1());
-	WM.markForDelete(p_c->getObject2());
-}
-
-int Bullet::draw() {
-	DM.drawCh(getPosition(), BULLET_CHAR, df::BLUE);
-	return 0;
+// If Bullet hits Saucer, mark Saucer and Bullet for deletion.
+void Bullet::hit(const df::EventCollision *p_collision_event) {
+	if ((p_collision_event->getObject1()->getType() == "Saucer") ||
+	    (p_collision_event->getObject2()->getType() == "Saucer")) {
+		WM.markForDelete(p_collision_event->getObject1());
+		WM.markForDelete(p_collision_event->getObject2());
+	}
 }

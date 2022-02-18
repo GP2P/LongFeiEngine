@@ -1,6 +1,7 @@
 #include "Object.h"
 #include "WorldManager.h"
 #include "ResourceManager.h"
+#include "utility.h"
 
 df::Object::Object() {
 	static int count = 0;
@@ -48,6 +49,9 @@ int df::Object::eventHandler(const df::Event *p_event) {
 }
 
 int df::Object::draw() {
+	// debug feature: draw Object's frame
+//	getWorldBox(this).draw();
+
 	return animation.draw(position);
 }
 

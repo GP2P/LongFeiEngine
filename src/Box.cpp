@@ -1,5 +1,6 @@
 #include "Box.h"
 #include "DisplayManager.h"
+#include "utility.h"
 
 df::Box::Box() {
 	corner = Vector();
@@ -60,6 +61,15 @@ void df::Box::draw() {
 		for (int j = 0; j < height; j++) {
 			df::Vector temp = corner + Vector(i, j);
 			DM.drawCh(temp, '*', df::RED);
+		}
+	}
+}
+
+void df::Box::draw(Vector position) {
+	for (int i = 0; i < width; i++) {
+		for (int j = 0; j < height; j++) {
+			df::Vector temp = corner + Vector(i, j);
+			DM.drawCh(temp + position, '*', df::RED);
 		}
 	}
 }

@@ -21,7 +21,8 @@ Reticle::Reticle() {
 #endif
 
 	// Start reticle in center of window.
-	df::Vector p(40, 12);
+	df::Vector p(WM.getWorldBoundary().getWidth() / 2,
+	             WM.getWorldBoundary().getWidth() / 2);
 	setPosition(p);
 }
 

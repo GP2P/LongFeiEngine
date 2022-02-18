@@ -21,13 +21,13 @@ namespace df {
 	// defaults for SFML window
 	const int WINDOW_HORIZONTAL_PIXELS_DEFAULT = 1024;
 	const int WINDOW_VERTICAL_PIXELS_DEFAULT = 768;
-	const int WINDOW_HORIZONTAL_CHARS_DEFAULT = 80;
+	const int WINDOW_HORIZONTAL_CHARS_DEFAULT = 82;
 	const int WINDOW_VERTICAL_CHARS_DEFAULT = 24;
 	const int WINDOW_STYLE_DEFAULT = sf::Style::Titlebar | sf::Style::Close;
 	const sf::Color WINDOW_BACKGROUND_COLOR_DEFAULT = sf::Color::Black;
 	const std::string WINDOW_TITLE_DEFAULT = "Dragonfly";
 	const std::string FONT_FILE_DEFAULT = "df-font.ttf";
-	const float FONT_SCALE_DEFAULT = 1.0;
+	const float FONT_SCALE_DEFAULT = 0.7;
 
 	// compute character height based on window size and font
 	float charHeight(void);

@@ -5,6 +5,7 @@
 #include "EventCollision.h"
 #include "DisplayManager.h"
 #include "EventOut.h"
+#include "ViewObject.h"
 
 df::WorldManager::WorldManager() {
 	update_list.clear();
@@ -104,7 +105,8 @@ void df::WorldManager::draw() {
 	for (int alt = 0; alt <= WM.MAX_ALTITUDE; alt++) {
 		while (!oli.isDone()) {
 			if (oli.currentObject()->getAltitude() == alt)
-				if (boxIntersectsBox(getWorldBox(oli.currentObject()), viewBoundary))
+				if (boxIntersectsBox(getWorldBox(oli.currentObject()), viewBoundary) ||
+				    dynamic_cast<ViewObject *>(oli.currentObject()))
 					oli.currentObject()->draw();
 			oli.next();
 		}

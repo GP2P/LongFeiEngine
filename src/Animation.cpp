@@ -68,4 +68,5 @@ int df::Animation::draw(df::Vector position) {
 	} else {
 		slowdownCounter++;
 	}
+	return 0;
 }

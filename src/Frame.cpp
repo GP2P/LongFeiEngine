@@ -45,6 +45,7 @@ int df::Frame::draw(df::Vector position, df::Color color) const {
 		for (int x = 0; x < width; x++)
 			if (frameContent[y * width + x] != ' ')
 				DM.drawCh(position + df::Vector(x - width / 2, y - height / 2), frameContent[y * width + x], color);
+	return 0;
 }
 
 void df::Frame::setString(std::string frameContent) {

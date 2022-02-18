@@ -18,6 +18,10 @@ namespace df {
 	Box getWorldBox(const Object *p_o, Vector position);
 
 	Vector worldToView(Vector worldPosition);
+
+	Vector viewToWorld(Vector worldPosition);
+
+	std::string toString(int i);
 }
 
 #endif //DF_UTILITY_H

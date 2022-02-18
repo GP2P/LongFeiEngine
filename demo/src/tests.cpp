@@ -14,6 +14,7 @@
 #include "Hero.h"
 #include "Star.h"
 #include "ResourceManager.h"
+#include "GameStart.h"
 
 int LMTests();
 
@@ -47,19 +48,16 @@ bool testBad();
 
 bool testBigBad();
 
-void runDemo1();
-
-void runDemo2();
+void runDemo();
 
 int main() {
+//	std::cout << "Running engine tests:" << std::endl << std::endl;
+//	tests();
 	std::cout << "Running game demo:" << std::endl << std::endl;
-	tests();
-//	DM.swapBuffers();
-//	runDemo1();
-// 	runDemo2();
+	runDemo();
 }
 
-void runDemo1() {
+void runDemo() {
 	// Start up game manager.
 	if (GM.startUp()) {
 		LM.writeLog(5, "Error starting game manager!");
@@ -69,49 +67,29 @@ void runDemo1() {
 	// Set flush of logfile during development (when done, make false).
 	LM.setFlush(true);
 
-	// Write game version information to logfile.
-	LM.writeLog(1, "Saucer Shoot Naiad");
+	RM.loadSprite("sprites/saucer-spr.txt", "saucer");
+	RM.loadSprite("sprites/ship-spr.txt", "ship");
+	RM.loadSprite("sprites/bullet-spr.txt", "bullet");
+	RM.loadSprite("sprites/explosion-spr.txt", "explosion");
+	RM.loadSprite("sprites/gamestart-spr.txt", "gamestart");
+	RM.loadSprite("sprites/gameover-spr.txt", "gameover");
+	RM.loadSound("sounds/fire.wav", "fire");
+	RM.loadSound("sounds/explode.wav", "explode");
+	RM.loadSound("sounds/nuke.wav", "nuke");
+	RM.loadSound("sounds/game-over.wav", "game over");
+	RM.loadMusic("sounds/start-music.wav", "start music");
 
 	// adjust view
-	WM.setWorldBoundary(df::Box(df::Vector(0, 0), 80, 50));
-	WM.setViewBoundary(df::Box(df::Vector(0, 0), 80, 24));
-
-	// Setup some objects.
-
-	// Create hero.
-	new Hero;
+	WM.setWorldBoundary(df::Box(df::Vector(), 80, DM.getVertical()));
+//	WM.setViewBoundary(df::Box(df::Vector(), 80, DM.getVertical()));
+	WM.setViewBoundary(df::Box(df::Vector(), DM.getHorizontal() + 5, DM.getVertical()));
 
 	// Spawn some Stars.
 	for (int i = 0; i < 16; i++)
 		new Star;
 
-	// Spawn some saucers to shoot.
-	for (int i = 0; i < 16; i++)
-		new Saucer;
-
-	// Run game (this blocks until game loop is over).
-	GM.run();
-
-	// Shut everything down.
-	GM.shutDown();
-}
-
-void runDemo2() {
-	// Start up game manager.
-	if (GM.startUp()) {
-		LM.writeLog(5, "Error starting game manager!");
-		GM.shutDown();
-	}
-
-	// Set flush of logfile during development (when done, make false).
-	LM.setFlush(true);
-
-	// Write game version information to logfile.
-	LM.writeLog(1, "my demo");
-
-	// Setup some objects.
-
-	new Tester;
+	// Create GameStart object.
+	new GameStart();
 
 	// Run game (this blocks until game loop is over).
 	GM.run();

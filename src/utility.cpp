@@ -1,5 +1,6 @@
 #include <ctime>
 #include <cstdio>
+#include <sstream>
 #include "utility.h"
 #include "WorldManager.h"
 
@@ -35,8 +36,6 @@ df::Box df::getWorldBox(const df::Object *p_o) {
 df::Box df::getWorldBox(const df::Object *p_o, df::Vector position) {
 	df::Box oriBox = p_o->getBox();
 	df::Vector oriCorner = oriBox.getCorner();
-	df::Box result = Box(df::Vector(oriCorner.getX() + position.getX(), oriCorner.getY() + position.getY()),
-	                     oriBox.getWidth(), oriBox.getHeight());
 	return {df::Vector(oriCorner.getX() + position.getX(), oriCorner.getY() + position.getY()),
 	        oriBox.getWidth(), oriBox.getHeight()};
 }
@@ -44,4 +43,15 @@ df::Box df::getWorldBox(const df::Object *p_o, df::Vector position) {
 df::Vector df::worldToView(Vector worldPosition) {
 	return {worldPosition.getX() - WM.getViewBoundary().getCorner().getX(),
 	        worldPosition.getY() - WM.getViewBoundary().getCorner().getY()};
+}
+
+df::Vector df::viewToWorld(Vector viewPosition) {
+	return {viewPosition.getX() + WM.getViewBoundary().getCorner().getX(),
+	        viewPosition.getY() + WM.getViewBoundary().getCorner().getY()};
+}
+
+std::string df::toString(int i) {
+	std::stringstream ss;
+	ss << i;
+	return ss.str();
 }

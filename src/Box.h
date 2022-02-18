@@ -37,6 +37,8 @@ namespace df {
 		bool operator!=(const Box &rhs) const;
 
 		void draw();
+
+		void draw(Vector position);
 	};
 }
 
