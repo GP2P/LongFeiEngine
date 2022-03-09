@@ -21,7 +21,7 @@ namespace df {
 	// defaults for SFML window
 	const int WINDOW_HORIZONTAL_PIXELS_DEFAULT = 1024;
 	const int WINDOW_VERTICAL_PIXELS_DEFAULT = 768;
-	const int WINDOW_HORIZONTAL_CHARS_DEFAULT = 82;
+	const int WINDOW_HORIZONTAL_CHARS_DEFAULT = 80;
 	const int WINDOW_VERTICAL_CHARS_DEFAULT = 24;
 	const int WINDOW_STYLE_DEFAULT = sf::Style::Titlebar | sf::Style::Close;
 	const sf::Color WINDOW_BACKGROUND_COLOR_DEFAULT = sf::Color::Black;

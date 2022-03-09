@@ -318,13 +318,21 @@ int WMTests() {
 		return -1;
 
 	// add Tester(Object) to WM
-	Tester *tester = new Tester(1, 2, "3");
+	auto *tester = new Tester(1, 2, "3");
 	if (!WM.getAllObjects().isEmpty()) {
 		WM.markForDelete(tester);
 		WM.update();
-		if (WM.getAllObjects().isEmpty()) {
-			return 0;
+		if (!WM.getAllObjects().isEmpty()) {
+			return -1;
 		}
+	}
+
+	// collision tests
+	auto *saucer1 = new Saucer();
+	auto *saucer2 = new Saucer();
+	saucer1->setPosition(saucer2->getPosition());
+	if (!WM.getCollisions(saucer1, saucer1->getPosition()).isEmpty()) {
+		return 0;
 	}
 	return -1;
 }

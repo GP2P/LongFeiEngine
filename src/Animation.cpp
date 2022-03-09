@@ -62,11 +62,9 @@ int df::Animation::draw(df::Vector position) {
 	if (slowdownCounter + 1 >= p_sprite->getSlowdown()) {
 		slowdownCounter = 0;
 		index++;
-		if (index >= p_sprite->getFrameCount()) {
+		if (index >= p_sprite->getFrameCount())
 			index = 0;
-		}
-	} else {
-		slowdownCounter++;
 	}
+	slowdownCounter++;
 	return 0;
 }

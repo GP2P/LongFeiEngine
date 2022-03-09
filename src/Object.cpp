@@ -8,6 +8,7 @@ df::Object::Object() {
 	count++;
 	id = count;
 	type = "Object";
+	solidness = df::HARD;
 	box = Box(Vector(-0.5, -0.5), 1, 1);
 	position = Vector();
 	altitude = WM.MAX_ALTITUDE / 2;
