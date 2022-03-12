@@ -2,14 +2,18 @@
 
 LongFei - DragonFly (text-based 2D game engine)
 
-## Build Engine
+### Dependency:
 
-Build with CMake: `CMakeLists.txt`
+- [SFML](https://github.com/SFML/SFML) (install seperatly and edit the library directory in `./CMakeLists.txt` to your SFML install directory's include folder)
 
-## Run Tests
+### Build Engine
+
+Build with CMake
+
+### Run Tests
 
 Run `demo/src/tests.cpp`'s `main()` method
 
-## Develop A Game
+### Develop a Game
 
 Replace files in the `demo` folder with your own game files
